@@ -7,15 +7,10 @@ pygame.init()
 screen = pygame.display.set_mode((screen_width, screen_height))
 clock = pygame.time.Clock()
 level = Level(screen)
+
 timer = False
 delay = 0.05
 jump_bool = True
-
-def switchbool(jump_bool):
-    if jump_bool == True:
-        jump_bool = False
-    elif jump_bool == False:
-        jump_bool = True
 
 while True:
     for event in pygame.event.get():
@@ -36,7 +31,8 @@ while True:
             jump_bool = False
     
     screen.fill('black')
-    level.run(jump_bool)
+    if level.run(jump_bool) == False:
+        break
 
     pygame.display.update()
     clock.tick(60)

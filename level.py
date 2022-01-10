@@ -71,10 +71,13 @@ class Level:
     def highscore_increment(self):
         if self.check_death():
             self.highscore += 10
+            return True
+        else:
+            print("game over")
+            return False
 
     def increase_difficulty(self, highscore):
         if highscore == 200 and self.difficulty_bool:
-            print(self.difficulty_bool)
             self.jump_percentage *= 1.4
             self.world_shift *= 1.3
             self.tile_size_change = 3
@@ -108,11 +111,13 @@ class Level:
         self.tiles.update(self.world_shift)
         self.tiles.draw(self.display_surface)
         #self.scroll_y()
-        
 
         # player
         self.player.update(jump_bool)
         self.vertical_movement_collision()
         self.player.draw(self.display_surface)
 
-        
+        if self.check_death():
+            return True
+        else:
+            return False
