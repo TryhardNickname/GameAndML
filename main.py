@@ -2,38 +2,43 @@ import pygame, sys, time
 from settings import *
 from level import Level
 
-pygame.init()
+class Game:
+    def __init__(self):
+        pygame.init()
 
-screen = pygame.display.set_mode((screen_width, screen_height))
-clock = pygame.time.Clock()
-level = Level(screen)
+        self.screen = pygame.display.set_mode((screen_width, screen_height))
+        self.clock = pygame.time.Clock()
+        self.level = Level(self.screen)
 
-timer = False
-delay = 0.05
-jump_bool = True
+        self.timer = False
+        self.delay = 0.05
+        self.jump_bool = True
 
-while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
-                x = time.time()
-                timer = True
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_SPACE:
-                timer = False
-                jump_bool = True
-    
-    if timer: 
-        if time.time() - x >= delay:
-            jump_bool = False
-    
-    screen.fill('black')
-    if level.run(jump_bool) == False:
-        break
+    def runGame(self): 
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        x = time.time()
+                        self.timer = True
+                if event.type == pygame.KEYUP:
+                    if event.key == pygame.K_SPACE:
+                        self.timer = False
+                        self.jump_bool = True
+            
+            if self.timer: 
+                if time.time() - x >= self.delay:
+                    self.jump_bool = False
+            
+            self.screen.fill('black')
+            self.level.run(self.jump_bool)                
 
-    pygame.display.update()
-    clock.tick(60)
+            pygame.display.update()
+            self.clock.tick(60)
 
+
+game = Game()
+game.runGame()
