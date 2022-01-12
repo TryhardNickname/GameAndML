@@ -15,6 +15,8 @@ class Level:
         self.reset()
 
     def setup_level(self):
+        self.player.empty()
+        self.tiles.empty()
         self.player.add(Player((250, 500)))
         self.tiles.add(Tile((250, 550), tile_size, 4))
 
@@ -31,6 +33,7 @@ class Level:
         self.tile_size_change = 4
 
         self.frame_iteration = 0
+        self.player_on_rect = False
 
     def vertical_movement_collision(self):
         player = self.player.sprite
@@ -41,6 +44,7 @@ class Level:
                 if player.direction.y > 0:
                     player.rect.bottom = sprite.rect.top
                     player.direction.y = 0
+                    self.player_on_rect = True
 
     def spawn_tiles(self):
         last_tile = Tile((0,0), tile_size, 4)
@@ -56,13 +60,10 @@ class Level:
             self.tiles.add(Tile((random.randint(0, 372), last_tile.rect.y - self.jump_reach*self.jump_percentage), tile_size, self.tile_size_change))          
     
     def closest_tile(self):
-        player_tile = self.player
-        nearest_rect = player_tile.sprite.rect.y
-
         counter = 0
 
         for tile in self.tiles:
-            if tile.rect.y < nearest_rect and counter == 0:
+            if tile.rect.y < 800 and counter == 0:
                 nearest_rect = tile
                 counter += 1
             
@@ -70,24 +71,20 @@ class Level:
     
     def check_death(self, pt=None):
         if pt is None:
-            pt = self.player.sprite
-            if pt.rect.y > 800:
-                return False
-            else:
-                return True
-        else:
+            pt = self.player.sprite.rect
             if pt.y > 800:
-                return False
-            else:
                 return True
+            else:
+                return False
+
 
     def score_increment(self):
-        if self.check_death():
+        if self.check_death():           
+            return False
+        else:
             self.score += 10
             return True
-        else:
-            print("game over")
-            return False
+            
 
     def increase_difficulty(self, score):
         if score == 200 and self.difficulty_bool:
@@ -130,7 +127,8 @@ class Level:
         #self.scroll_y()
 
         # player
-        self.player.update(jump_bool, action)
+        player_jumped = self.player.update(jump_bool, action, self.player_on_rect)
+        self.player_on_rect = False
         self.vertical_movement_collision()
         self.player.draw(self.display_surface)
 

@@ -19,12 +19,12 @@ class Agent:
         self.epsilon = 0
         self.gamma = 0.9
         self.memory = deque(maxlen=max_memory)
-        self.model = Linear_QNet(11, 256, 3)
+        self.model = Linear_QNet(8, 256, 3)
         self.trainer = QTrainer(self.model, lr=learning_rate, gamma=self.gamma)
 
     def get_state(self, game):
-        player = game.level.player
-        down = player.rect.y + 100
+        player = game.level.player.sprite
+        down = player.rect.y + 10
 
         direction_left = player.direction == Direction.Left
         direction_right = player.direction == Direction.Right
@@ -89,7 +89,7 @@ def train():
 
         final_move = agent.get_action(state_old)
 
-        reward, done, score = game.level.run(final_move)
+        reward, done, score = game.runGame(final_move)
         state_new = agent.get_state(game)
 
         agent.train_short_memory(state_old, final_move, reward, state_new, done)

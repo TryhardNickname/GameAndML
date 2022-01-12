@@ -1,12 +1,12 @@
 import pygame
 from pygame.key import name
 from enum import Enum
+import numpy as np
 
 class Direction(Enum):
     Left = pygame.math.Vector2(-1, 0)
     Right = pygame.math.Vector2(1, 0)
     Jump = pygame.math.Vector2(0, -8)
-    Nothing = pygame.math.Vector2(0, 0)
 
 
 class Player(pygame.sprite.Sprite):
@@ -21,18 +21,24 @@ class Player(pygame.sprite.Sprite):
         self.jump_clock = pygame.time.Clock()
         self.direction = pygame.math.Vector2(0, 0)
         
-    def get_input(self, jump_bool, action):
-        keys = pygame.key.get_pressed() 
+    def get_input(self, jump_bool, action, player_on_rect):
+        # keys = pygame.key.get_pressed() 
 
-        if keys[pygame.K_d]:
-            self.direction = Direction.Right
-        elif keys[pygame.K_a]:
-            self.direction = Direction.Left
-        else: 
-            self.direction = Direction.Nothing
+        if np.array_equal(action, [1,0,0]):
+            self.direction.x = 1
+        elif np.array_equal(action, [0,1,0]):
+            self.direction.x = -1
+        elif np.array_equal(action, [0,0,1]) and jump_bool and player_on_rect:
+            self.direction.y = self.jump_speed
+            return True
 
-        if keys[pygame.K_SPACE] and jump_bool:
-            self.direction = Direction.Jump
+        # if keys[pygame.K_d]:
+        #     self.direction = Direction.Right
+        # elif keys[pygame.K_a]:
+        #     self.direction = Direction.Left
+
+        # if keys[pygame.K_SPACE] and jump_bool:
+        #     self.direction = Direction.Jump
 
     def apply_gravity(self):
         self.direction.y += self.gravity
@@ -41,8 +47,9 @@ class Player(pygame.sprite.Sprite):
     def jump(self):
         self.direction.y = self.jump_speed
 
-    def update(self, jump_bool, action):
-        self.get_input(jump_bool, action)
+    def update(self, jump_bool, action, player_on_rect):
+        jump_or_not = self.get_input(jump_bool, action, player_on_rect)
         self.rect.x += self.direction.x * self.speed
         self.apply_gravity()
+        return jump_or_not
         

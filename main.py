@@ -14,7 +14,7 @@ class Game:
         self.delay = 0.05
         self.jump_bool = True
 
-    def runGame(self): 
+    def runGame(self, action): 
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -34,11 +34,9 @@ class Game:
                     self.jump_bool = False
             
             self.screen.fill('black')
-            self.level.run(self.jump_bool)                
+            reward, game_over, score = self.level.run(self.jump_bool, action)                
 
             pygame.display.update()
             self.clock.tick(60)
 
-
-game = Game()
-game.runGame()
+            return reward, game_over, score
