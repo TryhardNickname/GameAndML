@@ -27,11 +27,12 @@ class Game:
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_SPACE:
                         self.timer = False
-                        self.jump_bool = True
+                        #self.jump_bool = True
             
             if self.timer: 
                 if time.time() - x >= self.delay:
-                    self.jump_bool = False
+                    pass
+                    #self.jump_bool = False
             
             self.screen.fill('black')
             reward, game_over, score = self.level.run(self.jump_bool, action)                
@@ -66,11 +67,12 @@ class GameHuman:
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_SPACE:
                         self.timer = False
-                        jump_bool = True
+                        #jump_bool = True
             
             if self.timer: 
                 if time.time() - x >= self.delay:
-                    jump_bool = False
+                    pass
+                    #jump_bool = False
             
             self.screen.fill('black')
             if self.level.run(self.jump_bool) == False:
