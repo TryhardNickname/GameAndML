@@ -61,9 +61,12 @@ class Level:
     
     def closest_tile(self):
         counter = 0
+        player = self.player.sprite
+        nearest_rect = 0
 
         for tile in self.tiles:
-            if tile.rect.y < 800 and counter == 0:
+            nearest_rect = tile
+            if tile.rect.y < 800 and counter == 0 and tile.rect.y < player.rect.y:
                 nearest_rect = tile
                 counter += 1
             
@@ -76,7 +79,24 @@ class Level:
                 return True
             else:
                 return False
+        else:
+            if pt > 800:
+                return True
+            else:
+                return False
 
+    def out_of_bounds(self, pt=None):
+        if pt is None:
+            pt = self.player.sprite.rect
+            if pt.x > 500 or pt.x < 0:
+                return True
+            else:
+                return False
+        else:
+            if pt > 500 or pt < 0:
+                return True
+            else:
+                return False
 
     def score_increment(self):
         if self.check_death():           
@@ -128,7 +148,7 @@ class Level:
 
         # player
         player_jumped = self.player.update(jump_bool, action, self.player_on_rect)
-        self.player_on_rect = False
+        self.player_on_rect = player_jumped
         self.vertical_movement_collision()
         self.player.draw(self.display_surface)
 
@@ -139,7 +159,7 @@ class Level:
         else:
             reward = 10
             return reward, game_over, self.score
-            
+        
 
              
             

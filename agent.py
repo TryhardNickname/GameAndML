@@ -19,12 +19,14 @@ class Agent:
         self.epsilon = 0
         self.gamma = 0.9
         self.memory = deque(maxlen=max_memory)
-        self.model = Linear_QNet(8, 256, 3)
+        self.model = Linear_QNet(10, 256, 3)
         self.trainer = QTrainer(self.model, lr=learning_rate, gamma=self.gamma)
 
     def get_state(self, game):
         player = game.level.player.sprite
-        down = player.rect.y + 10
+        down = player.rect.y + 30
+        left = player.rect.x - 30
+        right = player.rect.x + 30
 
         direction_left = player.direction == Direction.Left
         direction_right = player.direction == Direction.Right
@@ -33,6 +35,12 @@ class Agent:
         state = [
             (direction_left and game.level.check_death(down) == False) or
             (direction_right and game.level.check_death(down) == False),
+
+            (direction_left and game.out_of_bounds(left) == False) or
+            (direction_right and game.out_of_bounds(left) == False),
+
+            (direction_left and game.out_of_bounds(right) == False) or
+            (direction_right and game.out_of_bounds(right) == False),
 
             direction_left,
             direction_right,
@@ -105,13 +113,13 @@ def train():
                 record = score
                 agent.model.save()
 
-            print('Game: ', agent.number_games, 'Score: ', score, 'Record: ', record)
+            print('Game:', agent.number_games, 'Score:', score, 'Record:', record)
 
-            plot_scores.append(score)
-            total_score += score
-            mean_score = total_score / agent.number_games
-            plot_mean_scores.append(mean_score)
-            plot(plot_scores, plot_mean_scores)
+            # plot_scores.append(score)
+            # total_score += score
+            # mean_score = total_score / agent.number_games
+            # plot_mean_scores.append(mean_score)
+            # plot(plot_scores, plot_mean_scores)
             
 
 
