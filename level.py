@@ -231,9 +231,10 @@ class LevelHuman:
     def highscore_increment(self):
         if self.check_death():
             self.highscore += 10
+            print('Score: ', self.highscore)
             return True
         else:
-            print("game over")
+            print("Game over")
             return False
 
     def increase_difficulty(self, highscore):
